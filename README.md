@@ -11,7 +11,7 @@ Existing test accounts are:
 * fred/fred123
 * zed/zed123
 
-## Getting started: running the application
+## Running the application
 
 This is a simple spring boot application, and can be run like any other application in this course. Project can be imported to NetBeans (or other similar IDE) and then build and run. 
 
@@ -26,10 +26,10 @@ Afterwards the application can be accessed by typing localhost:8080/ into browse
 
 ### Cross-Site Request Forgery / CSRF (A8)
 #### Issue: 
-Currently users can be fooled into visiting/loading malicious websites containing code that sends a request to the application. If the user is authenticated, then that request could, for example, be used to create a signup entry without the user's consent.
+Currently users can be fooled into visiting malicious websites containing code that sends a request to the application. If the user is authenticated, then that request could, for example, be used to create a signup entry without user's consent.
 
 #### Steps to reproduce:
-1. In the github repository there should be file called example-csrf.html. Make sure you have either downloaded that file, or created a new .html one with the same content.
+1. In the github repository there should be file called example-csrf.html. Make sure you have either downloaded that file, or created a new .html one with same content.
 1. Open localhost:8080/ in the browser
 2. If not logged in, type ”ted” (without quotes) in the User field and ”ted123” (without quotes) in the Password field.
 3. After you have been redirected to the “/form” page, open the example-csrf.html file in browser.
@@ -44,7 +44,7 @@ Currently users can be fooled into visiting/loading malicious websites containin
 
 ### Cross-Site Scripting / XSS (A3)
 #### Issue: 
-Cross-Site Scripting vulnerability occurs whenever a user can feed questionable data to the application without proper validation. Currently it is possible to pass malicious content to this application by entering it to the form’s email field. It could then be executed by other users with unpleasant consequences.
+XSS vulnerability occurs whenever a user can feed questionable data to the application without proper validation. Currently it is possible to pass malicious content to this application by entering it to the form’s email field. It could then be executed by other users with unpleasant consequences.
 
 #### Steps to reproduce:
 1. Open localhost:8080/ in the browser
@@ -52,7 +52,7 @@ Cross-Site Scripting vulnerability occurs whenever a user can feed questionable 
 3. On the page ”/form” in the Email field type in
 ```<script>alert("XSS");</script>```
 4. Click Submit. Page redirects to ”/done”.
-5. An alert pop-up that reads ”XSS” appears. This could be used to pass malicious content to a site that could then be executed by other users.
+5. An alert pop-up that reads ”XSS” appears. 
 
 #### How to Fix?
 1. Go to src/main/recources/templates
@@ -102,7 +102,7 @@ Insecure Direct Object Reference flaw means that it is possible to access data i
 7. On the ”/form” page fill in anything you want in the field Email. For example ”testi2@testi.fi”.
 8. Click Submit.
 9. You can now see both signups. In the browser’s address bar write ”localhost:8080/clear/id” (without quotes and replace id with ted’s signup’s id) and click Enter.
-10. Now the signup was deleted. This means that normal users can delete other users’ signups, even though that functionality should require authentication of the user that submitted the signup in question.
+10. Now the signup was deleted. This means that users can delete other users’ signups.
 
 #### How to Fix?
 1. Go to src/main/java/sec/project/controller/ and open file SignupController.java
@@ -125,9 +125,10 @@ if(signupRepository.findById(id).getName().equals(accountRepository.findByUserna
 The application has a security misconfiguration vulnerability regarding h2-console. H2-console lets you access SQL database with browser. It is important to know and control those who have access to the database server, so while it might be useful to have h2-console connection enabled in development, it is a serious security risk when the application is in production.
 
 #### Steps to reproduce:
-1. Open localhost:8080/h2-console/ in the browser
+1. Open localhost:8080/ in the browser
 2. If not logged in, type ”ted” (without quotes) in the User field and ”ted123” (without quotes) in the Password field.
-3. H2-console should now appear. 
+3. Now open "localhost:8080/h2-console" (without quotes) in the browser
+4. H2-console should now appear. 
 If you haven't yet fixed Missing Function Level Access Control by replacing 
 ```
 .anyRequest().permitAll();
