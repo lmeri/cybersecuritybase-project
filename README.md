@@ -6,10 +6,10 @@ This application gives logged in users functionality to sign up to an event. You
 The application does not currently support registering new user accounts.
 
 Existing test accounts are: 
-*ted/ted123
-*ned/ned123
-*fred/fred123
-*zed/zed123
+* ted/ted123
+* ned/ned123
+* fred/fred123
+* zed/zed123
 
 ## Getting started: running the application
 
@@ -19,9 +19,9 @@ Project can also be run from terminal by navigating to project repository and ex
 mvn spring-boot:run
 However, prerequisite for running the project that way is having Maven installed.
 
-Afterwards the application can be accessed by typing localhost:8080 into browser's address bar. 
+Afterwards the application can be accessed by typing localhost:8080/ into browser's address bar. 
 
-–
+
 ## Security vulnerabilities
 
 ### Cross-Site Request Forgery / CSRF (A8)
@@ -57,13 +57,13 @@ Cross-Site Scripting vulnerability occurs whenever a user can feed questionable 
 #### How to Fix?
 1. Go to src/main/recources/templates
 2. Open file done.html
-3. Change all instances ”th:utext” to ”th:text”. If text is defined as escaped, the script can't be executed.
+3. Change all instances ”th:utext” to ”th:text”. If text is defined as escaped (utext means unescaped text), the script can't be executed.
 
 –
 
 ### Missing Function Level Access Control (A7)
 #### Issue: 
-Missing Function Level Access Control means that one or more of the application’s functionalities can be used without proped authentication. E.g. currently it is possible for guests (not logged in) to see the details of people who have signed up the the event, and even delete their signups. This is a serious security flaw, since possibly sensitive data should be protected from outsiders. This is also a reference to Sensitive Data Exposure vulnerability (A6).
+Missing Function Level Access Control means that one or more of the application’s functionalities can be used without proped authentication. E.g. currently it is possible for guests (not logged-in) to see the details of people who have signed up the the event, and even delete their signups. This is a serious security flaw, since possibly sensitive data should be protected from outsiders. This is also a reference to Sensitive Data Exposure vulnerability (A6).
 
 #### Steps to reproduce:
 1. Open localhost:8080/ in the browser
@@ -101,7 +101,7 @@ Insecure Direct Object Reference flaw means that it is possible to access data i
 6. Type ”ned” (without quotes) in the User field and ”ned123” (without quotes) in the Password field.
 7. On the ”/form” page fill in anything you want in the field Email. For example ”testi2@testi.fi”.
 8. Click Submit.
-9. You can now see both signups. In the browser’s address bar write ”http://localhost:8080/clear/id” (without quotes and replace id with ted’s signup’s id) and click Enter.
+9. You can now see both signups. In the browser’s address bar write ”localhost:8080/clear/id” (without quotes and replace id with ted’s signup’s id) and click Enter.
 10. Now the signup was deleted. This means that normal users can delete other users’ signups, even though that functionality should require authentication of the user that submitted the signup in question.
 
 #### How to Fix?
@@ -114,7 +114,7 @@ signupRepository.delete(id);
 With
 ```
 if(signupRepository.findById(id).getName().equals(accountRepository.findByUsername(auth.getName()).getUsername())) { 
-signupRepository.delete(id);
+    signupRepository.delete(id);
 }
 ```
 
@@ -126,7 +126,17 @@ The application has a security misconfiguration vulnerability regarding h2-conso
 
 #### Steps to reproduce:
 1. Open localhost:8080/h2-console/ in the browser
-2. H2-console should now appear, even without logging in.
+2. If not logged in, type ”ted” (without quotes) in the User field and ”ted123” (without quotes) in the Password field.
+3. H2-console should now appear. 
+If you haven't yet fixed Missing Function Level Access Control by replacing 
+```
+.anyRequest().permitAll();
+```
+With
+```
+.anyRequest().authenticated();
+```
+then you could access h2-console even without logging in.
 
 #### How to Fix?
 1. Navigate to src/main/java/sec/project/config/ and open file SecurityConfiguration.java

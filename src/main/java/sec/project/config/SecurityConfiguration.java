@@ -29,7 +29,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         
         http.authorizeRequests()
                 .antMatchers("/form").authenticated()
-                //.antMatchers("/h2-console/*").denyAll()
+//                .antMatchers("/h2-console/*").denyAll()
                 .anyRequest().permitAll();
 //                .anyRequest().authenticated();
         
